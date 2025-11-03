@@ -71,30 +71,23 @@ export const deleteBlog = (id) => {
   }
 };
 
-export const searchBlogs = (searchTerm) => {
+export const getFilteredBlogs = (searchTerm = '', status = 'all') => {
   try {
-    const blogs = getBlogs();
-    if (!searchTerm || searchTerm.trim() === '') {
-      return blogs;
-    }
-    const term = searchTerm.toLowerCase().trim();
-    return blogs.filter((blog) =>
-      blog.title.toLowerCase().includes(term) ||
-      blog.content.toLowerCase().includes(term)
-    );
-  } catch (error) {
-    console.error('Error searching blogs:', error);
-    return [];
-  }
-};
+    let filtered = getBlogs();
 
-export const filterBlogsByStatus = (status) => {
-  try {
-    const blogs = getBlogs();
-    if (!status || status === 'all') {
-      return blogs;
+    if (searchTerm && searchTerm.trim() !== '') {
+      const term = searchTerm.toLowerCase().trim();
+      filtered = filtered.filter((blog) =>
+        blog.title.toLowerCase().includes(term) ||
+        blog.content.toLowerCase().includes(term)
+      );
     }
-    return blogs.filter((blog) => blog.status === status);
+
+    if (status && status !== 'all') {
+      filtered = filtered.filter((blog) => blog.status === status);
+    }
+
+    return filtered;
   } catch (error) {
     console.error('Error filtering blogs:', error);
     return [];

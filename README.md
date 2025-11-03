@@ -1,16 +1,56 @@
-# React + Vite
+# Blog Management App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based blog management application built with Vite and Material-UI. This single-page application (SPA) allows users to manage blog posts with authentication, full CRUD operations, and filtering capabilities.
 
-Currently, two official plugins are available:
+# Features
+- Create, Read, Update, and Delete blog posts
+- Search blogs by title and content
+- Filter blogs by status (public/unpublic)
+- Material-UI modern interface with custom theming
+- LocalStorage data persistence
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Getting Started
 
-## React Compiler
+**Prerequisites**
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* Node.js (version 16 or higher recommended)
+* npm or yarn package manager
 
-## Expanding the ESLint configuration
+**Installation**
+1. Clone the repo
+```
+git clone https://github.com/sirawitcs/blog-manage-app.git
+cd blog-manage-app
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+2. Install npm packages:
+```
+npm install
+```
+
+3. Start Project
+To run the project, you can use one of the following methods:
+
+**Option 1: Using the Command Line**
+
+```
+npm run dev
+```
+
+The application will start on http://localhost:3000
+
+## Available Commands
+
+```
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+
+# Lint code
+npm run lint
+```

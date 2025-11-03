@@ -12,7 +12,6 @@ const BlogEdit = ({ onShowSnackbar }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Load blog data
     const blogData = getBlogById(id);
     if (blogData) {
       setBlog(blogData);
@@ -27,7 +26,7 @@ const BlogEdit = ({ onShowSnackbar }) => {
       const updatedBlog = updateBlog(id, formData);
       if (updatedBlog) {
         onShowSnackbar('Blog updated successfully', 'success');
-        navigate('/blogs');
+        navigate('/dashboard');
       } else {
         onShowSnackbar('Failed to update blog', 'error');
       }
@@ -38,7 +37,7 @@ const BlogEdit = ({ onShowSnackbar }) => {
   };
 
   const handleCancel = () => {
-    navigate('/blogs');
+    navigate('/dashboard');
   };
 
   if (loading) {

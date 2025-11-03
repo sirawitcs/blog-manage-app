@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import {
   TextField,
   Button,
@@ -7,46 +9,27 @@ import {
   Alert,
 } from '@mui/material';
 import { Login as LoginIcon } from '@mui/icons-material';
-import { validateLoginForm } from '../utils/validation';
+import { loginFormSchema } from '../validate/loginSchema';
 
 const Login = ({ onLogin }) => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-  const [errors, setErrors] = useState({});
   const [loginError, setLoginError] = useState('');
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: '',
-      }));
-    }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(loginFormSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+    mode: 'onChange',
+  });
+
+  const onFormSubmit = (data) => {
     setLoginError('');
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const validation = validateLoginForm(formData);
-    if (!validation.isValid) {
-      setErrors(validation.errors);
-      return;
-    }
-
-
-    if (formData.email && formData.password.length >= 6) {
-      onLogin({ email: formData.email });
-    } else {
-      setLoginError('Invalid credentials');
-    }
+    onLogin({ email: data.email });
   };
 
   return (
@@ -67,16 +50,14 @@ const Login = ({ onLogin }) => {
         </Alert>
       )}
 
-      <Box component="form" onSubmit={handleSubmit} noValidate>
+      <Box component="form" onSubmit={handleSubmit(onFormSubmit)} noValidate>
         <TextField
           fullWidth
           label="Email"
-          name="email"
           type="email"
-          value={formData.email}
-          onChange={handleChange}
+          {...register('email')}
           error={!!errors.email}
-          helperText={errors.email}
+          helperText={errors.email?.message}
           margin="normal"
           autoComplete="email"
           autoFocus
@@ -85,12 +66,10 @@ const Login = ({ onLogin }) => {
         <TextField
           fullWidth
           label="Password"
-          name="password"
           type="password"
-          value={formData.password}
-          onChange={handleChange}
+          {...register('password')}
           error={!!errors.password}
-          helperText={errors.password}
+          helperText={errors.password?.message}
           margin="normal"
           autoComplete="current-password"
         />

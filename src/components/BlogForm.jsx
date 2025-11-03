@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Box,
   TextField,
@@ -9,86 +11,47 @@ import {
   MenuItem,
   FormHelperText,
 } from '@mui/material';
-import { validateBlogForm } from '../utils/validation';
+import { blogFormSchema } from '../validate/blogSchema';
 
 const BlogForm = ({ initialData, onSubmit, onCancel, submitLabel = 'Save' }) => {
-  const [formData, setFormData] = useState({
-    title: '',
-    content: '',
-    status: 'unpublic',
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(blogFormSchema),
+    defaultValues: {
+      title: '',
+      content: '',
+      status: 'unpublic',
+    },
+    mode: 'onChange',
   });
-  const [errors, setErrors] = useState({});
-  const [touched, setTouched] = useState({});
 
   useEffect(() => {
     if (initialData) {
-      setFormData({
+      reset({
         title: initialData.title || '',
         content: initialData.content || '',
         status: initialData.status || 'unpublic',
       });
     }
-  }, [initialData]);
+  }, [initialData, reset]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: '',
-      }));
-    }
-  };
-
-  const handleBlur = (field) => {
-    setTouched((prev) => ({
-      ...prev,
-      [field]: true,
-    }));
-
-    const validation = validateBlogForm({ ...formData, [field]: formData[field] });
-    if (validation.errors[field]) {
-      setErrors((prev) => ({
-        ...prev,
-        [field]: validation.errors[field],
-      }));
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    setTouched({
-      title: true,
-      content: true,
-      status: true,
-    });
-
-    const validation = validateBlogForm(formData);
-    if (!validation.isValid) {
-      setErrors(validation.errors);
-      return;
-    }
-
-    onSubmit(formData);
+  const onFormSubmit = (data) => {
+    onSubmit(data);
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} noValidate>
+    <Box component="form" onSubmit={handleSubmit(onFormSubmit)} noValidate>
       <TextField
         fullWidth
         label="Title"
-        name="title"
-        value={formData.title}
-        onChange={handleChange}
-        onBlur={() => handleBlur('title')}
-        error={touched.title && !!errors.title}
-        helperText={touched.title && errors.title}
+        {...register('title')}
+        error={!!errors.title}
+        helperText={errors.title?.message}
         margin="normal"
         required
         placeholder="Enter blog title"
@@ -97,12 +60,9 @@ const BlogForm = ({ initialData, onSubmit, onCancel, submitLabel = 'Save' }) => 
       <TextField
         fullWidth
         label="Content"
-        name="content"
-        value={formData.content}
-        onChange={handleChange}
-        onBlur={() => handleBlur('content')}
-        error={touched.content && !!errors.content}
-        helperText={touched.content && errors.content}
+        {...register('content')}
+        error={!!errors.content}
+        helperText={errors.content?.message}
         margin="normal"
         required
         multiline
@@ -113,22 +73,22 @@ const BlogForm = ({ initialData, onSubmit, onCancel, submitLabel = 'Save' }) => 
       <FormControl
         fullWidth
         margin="normal"
-        error={touched.status && !!errors.status}
+        error={!!errors.status}
         required
       >
         <InputLabel>Status</InputLabel>
-        <Select
+        <Controller
           name="status"
-          value={formData.status}
-          onChange={handleChange}
-          onBlur={() => handleBlur('status')}
-          label="Status"
-        >
-          <MenuItem value="public">Public</MenuItem>
-          <MenuItem value="unpublic">Unpublic</MenuItem>
-        </Select>
-        {touched.status && errors.status && (
-          <FormHelperText>{errors.status}</FormHelperText>
+          control={control}
+          render={({ field }) => (
+            <Select {...field} label="Status">
+              <MenuItem value="public">Public</MenuItem>
+              <MenuItem value="unpublic">Unpublic</MenuItem>
+            </Select>
+          )}
+        />
+        {errors.status && (
+          <FormHelperText>{errors.status?.message}</FormHelperText>
         )}
       </FormControl>
 

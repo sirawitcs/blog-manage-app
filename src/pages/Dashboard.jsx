@@ -21,7 +21,7 @@ import {
   Add as AddIcon,
   Search as SearchIcon,
 } from '@mui/icons-material';
-import { getBlogStats, getBlogs, deleteBlog } from '../utils/storage';
+import { getBlogStats, getBlogs, deleteBlog, getFilteredBlogs } from '../utils/storage';
 import { useNavigate } from 'react-router';
 import BlogTable from '../components/BlogTable';
 import DeleteConfirmDialog from '../components/DeleteConfirmDialog';
@@ -58,21 +58,7 @@ const Dashboard = ({ onShowSnackbar }) => {
   };
 
   const applyFilters = () => {
-    let filtered = [...blogs];
-
-    if (searchTerm.trim() !== '') {
-      const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(
-        (blog) =>
-          blog.title.toLowerCase().includes(term) ||
-          blog.content.toLowerCase().includes(term)
-      );
-    }
-
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter((blog) => blog.status === statusFilter);
-    }
-
+    const filtered = getFilteredBlogs(searchTerm, statusFilter);
     setFilteredBlogs(filtered);
   };
 

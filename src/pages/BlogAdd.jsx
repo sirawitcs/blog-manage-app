@@ -10,7 +10,7 @@ const BlogAdd = ({ onShowSnackbar }) => {
     try {
       addBlog(formData);
       onShowSnackbar('Blog created successfully', 'success');
-      navigate('/blogs');
+      navigate('/dashboard');
     } catch (error) {
       onShowSnackbar('Failed to create blog', 'error');
       console.error('Error creating blog:', error);
@@ -18,7 +18,7 @@ const BlogAdd = ({ onShowSnackbar }) => {
   };
 
   const handleCancel = () => {
-    navigate('/blogs');
+    navigate('/dashboard');
   };
 
   return (

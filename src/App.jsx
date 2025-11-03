@@ -1,13 +1,25 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router';
 import { Snackbar, Alert } from '@mui/material';
-import { initializeBlogData } from './data/mockBlogs';
 import AuthLayout from './layouts/AuthLayout';
 import MainLayout from './layouts/MainLayout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import BlogAdd from './pages/BlogAdd';
 import BlogEdit from './pages/BlogEdit';
+
+const initializeBlogData = async () => {
+  const existingData = localStorage.getItem('blogs');
+  if (!existingData) {
+    try {
+      const response = await fetch('/data/mockBlogs.json');
+      const initialBlogs = await response.json();
+      localStorage.setItem('blogs', JSON.stringify(initialBlogs));
+    } catch (error) {
+      console.error('Failed to load initial blog data:', error);
+    }
+  }
+};
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
